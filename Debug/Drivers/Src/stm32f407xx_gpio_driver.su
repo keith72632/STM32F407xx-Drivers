@@ -1,0 +1,10 @@
+stm32f407xx_gpio_driver.cpp:27:7:void Gpio::GPIO_PeriClockControl(GPIO_RegDef_t*, uint8_t)	16	static
+stm32f407xx_gpio_driver.cpp:70:7:void Gpio::GPIO_Init(GPIO_Handle_t*)	16	static
+stm32f407xx_gpio_driver.cpp:88:7:void Gpio::GPIO_DeInit(GPIO_RegDef_t*)	16	static
+stm32f407xx_gpio_driver.cpp:107:10:uint8_t Gpio::GPIO_ReadFromInputPin(GPIO_RegDef_t*, uint8_t)	16	static
+stm32f407xx_gpio_driver.cpp:124:11:uint16_t Gpio::GPIO_ReadFromInputPort(GPIO_RegDef_t*)	16	static
+stm32f407xx_gpio_driver.cpp:142:7:void Gpio::GPIO_WriteToOutputPin(GPIO_RegDef_t*, uint8_t, uint8_t)	16	static
+stm32f407xx_gpio_driver.cpp:160:7:void Gpio::GPIO_WriteToOutputPort(GPIO_RegDef_t*, uint16_t)	16	static
+stm32f407xx_gpio_driver.cpp:178:7:void Gpio::GPIO_ToggleOutputPin(GPIO_RegDef_t*, uint8_t)	16	static
+stm32f407xx_gpio_driver.cpp:197:7:void Gpio::GPIO_IRQConfig(uint8_t, uint8_t, uint8_t)	16	static
+stm32f407xx_gpio_driver.cpp:213:7:void Gpio::GPIO_IRQHandling()	4	static
