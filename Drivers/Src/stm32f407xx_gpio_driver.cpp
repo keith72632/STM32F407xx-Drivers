@@ -24,7 +24,7 @@
  * */
 
 namespace Gpio {
-	void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
+	void PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 	{
 		if(EnorDi)
 		{
@@ -67,10 +67,34 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
+	void Init(Handler_t *pGPIOHandle)
 	{
-		GPIO_PeriClockControl(pGPIOHandle->pGPIOx, ENABLE);
-		pGPIOHandle->pGPIOx->MODER |= (OUTPUT << (pGPIOHandle->pPinConfig->GPIO_PinNumber * 2));
+		uint32_t _pinNo, _mode;
+
+		PeriClockControl(pGPIOHandle->pGPIOx, ENABLE);
+		//GPIO Pin Mode
+		_pinNo = pGPIOHandle->pPinConfig->GPIO_PinNumber;
+		_mode = pGPIOHandle->pPinConfig->GPIO_PinMode;
+		if(_mode == OUTPUT)
+		{
+			pGPIOHandle->pGPIOx->MODER |= MODE_OUTPUT_VAL(_pinNo);
+		}
+
+		if(_mode == ALT)
+		{
+			uint8_t _altVal = pGPIOHandle->pPinConfig->GPIO_PinAltFunMode;
+			pGPIOHandle->pGPIOx->MODER |= MODE_ALT_VAL(_pinNo);
+			if(_pinNo < 8)
+			{
+				pGPIOHandle->pGPIOx->AFR[0] |=  ALT_VAL(_altVal, _pinNo);
+			}
+			else
+			{
+				pGPIOHandle->pGPIOx->AFR[1] |= ALT_VAL(_altVal, (_pinNo - 8));
+			}
+		}
+
+
 	};
 
 
@@ -85,9 +109,24 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
+	void DeInit(GPIO_RegDef_t *pGPIOx)
 	{
-
+		if(pGPIOx==GPIOA)
+		{
+			GPIOA_PCLK_DI();
+		}
+		else if(pGPIOx==GPIOB)
+		{
+			GPIOB_PCLK_DI();
+		}
+		else if(pGPIOx==GPIOC)
+		{
+			GPIOC_PCLK_DI();
+		}
+		else if(pGPIOx==GPIOD)
+		{
+			GPIOD_PCLK_DI();
+		}
 	};
 
 
@@ -104,7 +143,7 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber)
+	uint8_t ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber)
 	{
 		return 0;
 	};
@@ -121,7 +160,7 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
+	uint16_t ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
 	{
 		return 0;
 	};
@@ -139,9 +178,9 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t Value)
+	void WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t Value)
 	{
-		pGPIOx->ODR |= (Value << pinNumber);
+		pGPIOx->ODR |= ODR_VAL(pinNumber);
 	};
 
 
@@ -157,7 +196,7 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
+	void WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
 	{
 
 	};
@@ -175,7 +214,7 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber)
+	void ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber)
 	{
 
 	};
@@ -194,7 +233,7 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
+	void IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
 	{
 
 	};
@@ -210,7 +249,7 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	void GPIO_IRQHandling(void)
+	void RQHandling(void)
 	{
 
 	};

@@ -21,11 +21,11 @@
 
 int main(void)
 {
-	GPIO_PinConfig pinConf(15);
-	GPIO_Handle_t handler(GPIOD, &pinConf);
-	Gpio::GPIO_Init(&handler);
+	Gpio::PinConfig pinConf(PIN_15, OUTPUT, NONE);
+	Gpio::Handler_t handler(GPIOD, &pinConf);
+	Gpio::Init(&handler);
 
-	Gpio::GPIO_WriteToOutputPin(handler.pGPIOx, 15, SET);
+	Gpio::WriteToOutputPin(handler.pGPIOx, PIN_15, SET);
     /* Loop forever */
 	for(;;);
 }
