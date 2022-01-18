@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 /************************************************************************************************
- * @function                   - GPIO_PeriClockControl
+ * @function                   - PeriClockControl
  *
  * @breif                      - This function enables or disables peripheral clock for the given GPIO port
  *
@@ -57,7 +57,7 @@ namespace Gpio {
 
 	/*Initializations*/
 	/************************************************************************************************
-	 * @function                   - GPIO_Init
+	 * @function                   - Init
 	 *
 	 * @breif                      -
 	 *
@@ -80,7 +80,7 @@ namespace Gpio {
 			pGPIOHandle->pGPIOx->MODER |= MODE_OUTPUT_VAL(_pinNo);
 		}
 
-		if(_mode == ALT)
+		else if(_mode == ALT)
 		{
 			uint8_t _altVal = pGPIOHandle->pPinConfig->GPIO_PinAltFunMode;
 			pGPIOHandle->pGPIOx->MODER |= MODE_ALT_VAL(_pinNo);
@@ -94,14 +94,46 @@ namespace Gpio {
 			}
 		}
 
+		else if (_mode == INPUT)
+		{
+			pGPIOHandle->pGPIOx->MODER &= MODE_INPUT_VAL(_pinNo);
+		}
+
+		else if(_mode == INT_FT)
+		{
+			EXTI->FTSR |= (1 << _pinNo);
+			//clear the corresonding RTSR bit
+			EXTI->RTSR &= ~(1 << _pinNo);
+		}
+
+		else if(_mode == INT_RT)
+		{
+			EXTI->RTSR |= (1 << _pinNo);
+			//clear the corresonding RTSR bit
+			EXTI->FTSR &= ~(1 << _pinNo);
+		}
+
+		else if(_mode == INT_RFT)
+		{
+			EXTI->FTSR |= (1 << _pinNo);
+			//clear the corresonding RTSR bit
+			EXTI->RTSR |= (1 << _pinNo);
+		}
+
+		//Configure the GPIO port selection in SYSCFG_EXTICR
+		SYSCFG_PCLK_EN();
+		SYSCFG->EXTICR[0] |= (0x03 << 0);
+
+		//Enable THE EXTI interrupt delivery using IMR
+		EXTI->IMR |= (1 << _pinNo);
 
 	};
 
 
 	/************************************************************************************************
-	 * @function                   - GPIO_DeInit
+	 * @function                   - DeInit
 	 *
-	 * @breif                      - This function enables or disables peripheral clock for the given GPIO port
+	 * @breif                      - This function dinitializes the GPIO Clock
 	 *
 	 * @param[in]                  - Base address of the gpio peripheral
 	 *
@@ -145,7 +177,7 @@ namespace Gpio {
 	 * */
 	uint8_t ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber)
 	{
-		return 0;
+		return (pGPIOx->IDR >> pinNumber) & 0x00000001;
 	};
 
 
@@ -162,7 +194,7 @@ namespace Gpio {
 	 * */
 	uint16_t ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
 	{
-		return 0;
+		return pGPIOx->IDR;
 	};
 
 
@@ -180,7 +212,12 @@ namespace Gpio {
 	 * */
 	void WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t Value)
 	{
-		pGPIOx->ODR |= ODR_VAL(pinNumber);
+		uint32_t val = ODR_VAL(pinNumber);
+		if(Value)
+			pGPIOx->ODR |= val;
+		else
+			pGPIOx->ODR &= ~val;
+
 	};
 
 
@@ -198,7 +235,7 @@ namespace Gpio {
 	 * */
 	void WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
 	{
-
+		pGPIOx->ODR |= Value;
 	};
 
 
@@ -216,7 +253,7 @@ namespace Gpio {
 	 * */
 	void ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber)
 	{
-
+		pGPIOx->ODR ^= ODR_VAL(pinNumber);
 	};
 
 
@@ -249,7 +286,7 @@ namespace Gpio {
 	 *
 	 * @Note
 	 * */
-	void RQHandling(void)
+	void IRQHandling(void)
 	{
 
 	};

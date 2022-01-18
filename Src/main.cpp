@@ -21,11 +21,25 @@
 
 int main(void)
 {
-	Gpio::PinConfig pinConf(PIN_15, OUTPUT, NONE);
-	Gpio::Handler_t handler(GPIOD, &pinConf);
-	Gpio::Init(&handler);
+	Gpio::PinConfig inputPinConf(PIN_0, INPUT, INT_RFT);
+	Gpio::PinConfig outputPinConf(PIN_15, OUTPUT, NONE);
+	Gpio::Handler_t inputHandler(GPIOD, &inputPinConf);
+	Gpio::Handler_t outputHandler(GPIOD, &outputPinConf);
+	Gpio::Init(&inputHandler);
+	Gpio::Init(&outputHandler);
 
-	Gpio::WriteToOutputPin(handler.pGPIOx, PIN_15, SET);
-    /* Loop forever */
-	for(;;);
+
+	while(1)
+	{
+		uint8_t stat = Gpio::ReadFromInputPin(GPIOD, PIN_1);
+		if(stat)
+			Gpio::WriteToOutputPin(outputHandler.pGPIOx, PIN_15, SET);
+		else
+			Gpio::WriteToOutputPin(outputHandler.pGPIOx, PIN_15, RESET);
+	}
+}
+
+extern "C" void EXTI0_IRQHandler(void)
+{
+	while(1);
 }

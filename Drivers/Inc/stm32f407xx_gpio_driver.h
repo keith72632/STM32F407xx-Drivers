@@ -31,6 +31,9 @@
 #define OUTPUT    0x01U
 #define ALT       0x02U
 #define ANALOG    0x03U
+#define INT_FT    0x04U
+#define INT_RT    0x05U
+#define INT_RFT   0x06U
 
 #define AF0       0
 #define AF1       1
@@ -53,6 +56,7 @@
  * These macro functions are used to ascertain the binary value of mode and register, to improve readability *
  *************************************************************************************************************/
 //Macros that return binary value based on mode and in number
+#define MODE_INPUT_VAL(PIN_NO)      (0 << (PIN_NO*2))
 #define MODE_OUTPUT_VAL(PIN_NO)     (1 << (PIN_NO*2))
 #define MODE_ALT_VAL(PIN_NO)        (2 << (PIN_NO*2))
 
@@ -92,18 +96,22 @@ namespace Gpio {
 			if(this->pGPIOx==GPIOA)
 			{
 				GPIOA_PCLK_DI();
+				GPIOA_REG_RESET();
 			}
 			else if(this->pGPIOx==GPIOB)
 			{
 				GPIOB_PCLK_DI();
+				GPIOB_REG_RESET();
 			}
 			else if(this->pGPIOx==GPIOC)
 			{
 				GPIOC_PCLK_DI();
+				GPIOC_REG_RESET();
 			}
 			else if(this->pGPIOx==GPIOD)
 			{
 				GPIOD_PCLK_DI();
+				GPIOD_REG_RESET();
 			}
 		}
 	}Handler_t;
