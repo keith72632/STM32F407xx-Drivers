@@ -21,25 +21,43 @@
 
 int main(void)
 {
-	Gpio::PinConfig inputPinConf(PIN_0, INPUT, INT_RFT);
+	Gpio::PinConfig intPinConf(PIN_1, INT_RFT, 0);
 	Gpio::PinConfig outputPinConf(PIN_15, OUTPUT, NONE);
-	Gpio::Handler_t inputHandler(GPIOD, &inputPinConf);
+	Gpio::Handler_t intHandler(GPIOA, &intPinConf);
 	Gpio::Handler_t outputHandler(GPIOD, &outputPinConf);
-	Gpio::Init(&inputHandler);
+	Gpio::Init(&intHandler);
 	Gpio::Init(&outputHandler);
+
+
+//	GPIOA->MODER &= ~(3 << 2);
+//
+//	GPIOA->PUPDR |= (1 << 2);
+//
+//	SYSCFG_PCLK_EN();
+//
+//	SYSCFG->EXTICR[0] &= ~(0xf << 4);
+//
+//	EXTI->IMR |= 1 << 1;
+//
+//	EXTI->RTSR |= 1 << 1;
+//
+//	EXTI->FTSR &= ~(1 << 1);
+//
+//	uint32_t *pNVIC0 = (uint32_t*)0xe000e100;
+//
+//	*pNVIC0 |= 1 << IRQ_NO_EXTI1;
+
+
 
 
 	while(1)
 	{
-		uint8_t stat = Gpio::ReadFromInputPin(GPIOD, PIN_1);
-		if(stat)
-			Gpio::WriteToOutputPin(outputHandler.pGPIOx, PIN_15, SET);
-		else
-			Gpio::WriteToOutputPin(outputHandler.pGPIOx, PIN_15, RESET);
+
 	}
 }
 
-extern "C" void EXTI0_IRQHandler(void)
+
+extern "C" void EXTI1_IRQHandler(void)
 {
 	while(1);
 }

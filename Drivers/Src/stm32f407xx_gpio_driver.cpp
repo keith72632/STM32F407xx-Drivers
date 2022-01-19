@@ -101,6 +101,8 @@ namespace Gpio {
 
 		else if(_mode == INT_FT)
 		{
+			SYSCFG_PCLK_EN();
+
 			EXTI->FTSR |= (1 << _pinNo);
 			//clear the corresonding RTSR bit
 			EXTI->RTSR &= ~(1 << _pinNo);
@@ -108,6 +110,8 @@ namespace Gpio {
 
 		else if(_mode == INT_RT)
 		{
+			SYSCFG_PCLK_EN();
+
 			EXTI->RTSR |= (1 << _pinNo);
 			//clear the corresonding RTSR bit
 			EXTI->FTSR &= ~(1 << _pinNo);
@@ -115,17 +119,24 @@ namespace Gpio {
 
 		else if(_mode == INT_RFT)
 		{
+			uint8_t temp = _pinNo / 4;
+			SYSCFG_PCLK_EN();
+
+			pGPIOHandle->pGPIOx->PUPDR |= (1 << (_pinNo *2));
+
+			SYSCFG->EXTICR[temp] &= ~(0xf << (_pinNo *4));
+
+			EXTI->IMR |= (1 << _pinNo);
+
 			EXTI->FTSR |= (1 << _pinNo);
 			//clear the corresonding RTSR bit
 			EXTI->RTSR |= (1 << _pinNo);
+
+			uint32_t *pNVIC0 = (uint32_t*)0xe000e100;
+
+			*pNVIC0 |= 1 << IRQ_NO_EXTI1;
 		}
 
-		//Configure the GPIO port selection in SYSCFG_EXTICR
-		SYSCFG_PCLK_EN();
-		SYSCFG->EXTICR[0] |= (0x03 << 0);
-
-		//Enable THE EXTI interrupt delivery using IMR
-		EXTI->IMR |= (1 << _pinNo);
 
 	};
 
