@@ -24,6 +24,57 @@
  * */
 
 namespace Gpio {
+	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode)
+	{
+		this->GPIO_PinNumber = pinNumber;
+		this->GPIO_PinMode = pinMode;
+	}
+
+	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t pupd)
+	{
+		this->GPIO_PinNumber = pinNumber;
+		this->GPIO_PinMode = pinMode;
+		this->GPIO_PinPuPdControl = pupd;
+	}
+
+	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t pupd, uint8_t altFun)
+	{
+		this->GPIO_PinNumber = pinNumber;
+		this->GPIO_PinMode = pinMode;
+		this->GPIO_PinPuPdControl = pupd;
+		this->GPIO_PinAltFunMode = altFun;
+	}
+
+	Handler_t::Handler(GPIO_RegDef_t *reg, PinConfig_t *pin)
+	{
+		this->pGPIOx = reg;
+		this->pPinConfig = pin;
+	}
+
+	Handler_t::~Handler(void)
+	{
+		if(this->pGPIOx==GPIOA)
+		{
+			GPIOA_PCLK_DI();
+			GPIOA_REG_RESET();
+		}
+		else if(this->pGPIOx==GPIOB)
+		{
+			GPIOB_PCLK_DI();
+			GPIOB_REG_RESET();
+		}
+		else if(this->pGPIOx==GPIOC)
+		{
+			GPIOC_PCLK_DI();
+			GPIOC_REG_RESET();
+		}
+		else if(this->pGPIOx==GPIOD)
+		{
+			GPIOD_PCLK_DI();
+			GPIOD_REG_RESET();
+		}
+	}
+
 	void PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 	{
 		if(EnorDi)
@@ -103,24 +154,46 @@ namespace Gpio {
 		{
 			SYSCFG_PCLK_EN();
 
+			uint8_t temp = _pinNo / 4;
+			uint8_t pupd = pGPIOHandle->pPinConfig->GPIO_PinPuPdControl;
+
+			pGPIOHandle->pGPIOx->PUPDR |= (pupd << (_pinNo *2));
+
+			SYSCFG->EXTICR[temp] &= ~(0xf << (_pinNo *4));
+
+			EXTI->IMR |= (1 << _pinNo);
+
 			EXTI->FTSR |= (1 << _pinNo);
-			//clear the corresonding RTSR bit
+				//clear the corresonding RTSR bit
 			EXTI->RTSR &= ~(1 << _pinNo);
+
+			*NVIC_ISER0 |= 1 << IRQ_NO_EXTI1;
 		}
 
 		else if(_mode == INT_RT)
 		{
 			SYSCFG_PCLK_EN();
 
-			EXTI->RTSR |= (1 << _pinNo);
-			//clear the corresonding RTSR bit
+			uint8_t temp = _pinNo / 4;
+
+			pGPIOHandle->pGPIOx->PUPDR |= (1 << (_pinNo *2));
+
+			SYSCFG->EXTICR[temp] &= ~(0xf << (_pinNo *4));
+
+			EXTI->IMR |= (1 << _pinNo);
+
 			EXTI->FTSR &= ~(1 << _pinNo);
+				//clear the corresonding RTSR bit
+			EXTI->RTSR |= (1 << _pinNo);
+
+			*NVIC_ISER0 |= 1 << IRQ_NO_EXTI1;
 		}
 
 		else if(_mode == INT_RFT)
 		{
-			uint8_t temp = _pinNo / 4;
 			SYSCFG_PCLK_EN();
+
+			uint8_t temp = _pinNo / 4;
 
 			pGPIOHandle->pGPIOx->PUPDR |= (1 << (_pinNo *2));
 
@@ -132,9 +205,7 @@ namespace Gpio {
 			//clear the corresonding RTSR bit
 			EXTI->RTSR |= (1 << _pinNo);
 
-			uint32_t *pNVIC0 = (uint32_t*)0xe000e100;
-
-			*pNVIC0 |= 1 << IRQ_NO_EXTI1;
+			*NVIC_ISER0 |= 1 << IRQ_NO_EXTI1;
 		}
 
 
@@ -301,5 +372,14 @@ namespace Gpio {
 	{
 
 	};
+
+	void resetEXTI(uint8_t pinNo)
+	{
+		if(EXTI->PR |= (1 << pinNo))
+		{
+			EXTI->PR &= ~(1 << pinNo);
+		}
+	};
+
 
 }

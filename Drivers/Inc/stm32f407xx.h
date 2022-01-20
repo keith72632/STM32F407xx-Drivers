@@ -354,6 +354,12 @@ typedef struct
 #define GPIOH_PCLK_DI()		(RCC->AHB1ENR &= ~(1 << 7))
 #define GPIOI_PCLK_DI()		(RCC->AHB1ENR &= ~(1 << 8))
 
+
+/*
+ * LED Macros
+ */
+#define BLUE_TOGGLE()       (GPIOD->ODR ^= (1 << 15))
+
 /*
  * Clock Disable Macros for SPIx peripherals
  */

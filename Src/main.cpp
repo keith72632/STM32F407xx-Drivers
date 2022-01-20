@@ -17,38 +17,19 @@
  */
 
 #include <stdint.h>
+#include <stdlib.h>
 #include "stm32f407xx.h"
 
 int main(void)
 {
-	Gpio::PinConfig intPinConf(PIN_1, INT_RFT, 0);
-	Gpio::PinConfig outputPinConf(PIN_15, OUTPUT, NONE);
+	Gpio::PinConfig intPinConf(PIN_1, INT_FT, PULL_UP, NO_AF);
+	Gpio::PinConfig outputPinConf(PIN_15, OUTPUT);
 	Gpio::Handler_t intHandler(GPIOA, &intPinConf);
 	Gpio::Handler_t outputHandler(GPIOD, &outputPinConf);
 	Gpio::Init(&intHandler);
 	Gpio::Init(&outputHandler);
 
-
-//	GPIOA->MODER &= ~(3 << 2);
-//
-//	GPIOA->PUPDR |= (1 << 2);
-//
-//	SYSCFG_PCLK_EN();
-//
-//	SYSCFG->EXTICR[0] &= ~(0xf << 4);
-//
-//	EXTI->IMR |= 1 << 1;
-//
-//	EXTI->RTSR |= 1 << 1;
-//
-//	EXTI->FTSR &= ~(1 << 1);
-//
-//	uint32_t *pNVIC0 = (uint32_t*)0xe000e100;
-//
-//	*pNVIC0 |= 1 << IRQ_NO_EXTI1;
-
-
-
+	Gpio::WriteToOutputPin(GPIOD, PIN_15, SET);
 
 	while(1)
 	{
@@ -56,8 +37,16 @@ int main(void)
 	}
 }
 
+void delay(uint32_t ticks)
+{
+	for(size_t i = 0; i < (ticks * 1000); i++);
+}
 
 extern "C" void EXTI1_IRQHandler(void)
 {
-	while(1);
+	BLUE_TOGGLE();
+	if(EXTI->PR |= 1 << PIN_1)
+	{
+		CLR_EXTI_INT(PIN_1);
+	}
 }

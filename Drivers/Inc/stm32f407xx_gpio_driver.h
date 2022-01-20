@@ -51,6 +51,11 @@
 #define AF13      13
 #define AF14      14
 #define AF15      15
+#define NO_AF     0x00
+
+#define NO_PUPD   0x00
+#define PULL_UP   0x01
+#define PULL_DOWN 0x02
 
 /*************************************************************************************************************
  * These macro functions are used to ascertain the binary value of mode and register, to improve readability *
@@ -64,7 +69,7 @@
 #define ALT_VAL(MODE_VAL, PIN_NO)   (MODE_VAL << (PIN_NO * 4))
 #define ODR_VAL(PIN_NO)             (1 << PIN_NO)
 
-
+#define CLR_EXTI_INT(PIN_NO)        (EXTI->PR &~(1<<PIN_NO))
 
 
 namespace Gpio {
@@ -75,45 +80,16 @@ namespace Gpio {
 		uint8_t GPIO_PinPuPdControl;
 		uint8_t GPIO_PinOPType;
 		uint8_t GPIO_PinAltFunMode;
-		PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t altFun)
-		{
-			this->GPIO_PinNumber = pinNumber;
-			this->GPIO_PinMode = pinMode;
-			this->GPIO_PinAltFunMode = altFun;
-		}
+		PinConfig(uint8_t pinNumber, uint8_t pinMode);
+		PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t pupd);
+		PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t pupd, uint8_t altFun);
 	}PinConfig_t;
 
 	typedef struct Handler{
 		GPIO_RegDef_t *pGPIOx;
 		PinConfig_t *pPinConfig;
-		Handler(GPIO_RegDef_t *reg, PinConfig_t *pin)
-		{
-			this->pGPIOx = reg;
-			this->pPinConfig = pin;
-		}
-		~Handler()
-		{
-			if(this->pGPIOx==GPIOA)
-			{
-				GPIOA_PCLK_DI();
-				GPIOA_REG_RESET();
-			}
-			else if(this->pGPIOx==GPIOB)
-			{
-				GPIOB_PCLK_DI();
-				GPIOB_REG_RESET();
-			}
-			else if(this->pGPIOx==GPIOC)
-			{
-				GPIOC_PCLK_DI();
-				GPIOC_REG_RESET();
-			}
-			else if(this->pGPIOx==GPIOD)
-			{
-				GPIOD_PCLK_DI();
-				GPIOD_REG_RESET();
-			}
-		}
+		Handler(GPIO_RegDef_t *reg, PinConfig_t *pin);
+		~Handler();
 	}Handler_t;
 	/***********************************************************************************
 	 *                       APIs supported by this driver
@@ -135,6 +111,7 @@ namespace Gpio {
 	/*Interrupts*/
 	void IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
 	void IRQHandling(void);
+	void resetEXTI(uint8_t pinNo);
 
 }
 #endif /* INC_STM32F407XX_GPIO_DRIVER_H_ */
