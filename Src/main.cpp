@@ -22,8 +22,10 @@
 
 int main(void)
 {
-	Gpio::PinConfig intPinConf(PIN_1, INT_FT, PULL_UP, NO_AF);
-	Gpio::PinConfig outputPinConf(PIN_15, OUTPUT);
+	Usart usart1 = Usart(USART_1);
+	usart1.usart_init();
+	Gpio::PinConfig_t intPinConf(PIN_1, INT_FT, PULL_UP, NO_AF);
+	Gpio::PinConfig_t outputPinConf(PIN_15, OUTPUT);
 	Gpio::Handler_t intHandler(GPIOA, &intPinConf);
 	Gpio::Handler_t outputHandler(GPIOD, &outputPinConf);
 	Gpio::Init(&intHandler);
