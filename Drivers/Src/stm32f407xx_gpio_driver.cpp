@@ -51,29 +51,29 @@ namespace Gpio {
 		this->pPinConfig = pin;
 	}
 
-	Handler_t::~Handler(void)
-	{
-		if(this->pGPIOx==GPIOA)
-		{
-			GPIOA_PCLK_DI();
-			GPIOA_REG_RESET();
-		}
-		else if(this->pGPIOx==GPIOB)
-		{
-			GPIOB_PCLK_DI();
-			GPIOB_REG_RESET();
-		}
-		else if(this->pGPIOx==GPIOC)
-		{
-			GPIOC_PCLK_DI();
-			GPIOC_REG_RESET();
-		}
-		else if(this->pGPIOx==GPIOD)
-		{
-			GPIOD_PCLK_DI();
-			GPIOD_REG_RESET();
-		}
-	}
+//	Handler_t::~Handler(void)
+//	{
+//		if(this->pGPIOx==GPIOA)
+//		{
+//			GPIOA_PCLK_DI();
+//			GPIOA_REG_RESET();
+//		}
+//		else if(this->pGPIOx==GPIOB)
+//		{
+//			GPIOB_PCLK_DI();
+//			GPIOB_REG_RESET();
+//		}
+//		else if(this->pGPIOx==GPIOC)
+//		{
+//			GPIOC_PCLK_DI();
+//			GPIOC_REG_RESET();
+//		}
+//		else if(this->pGPIOx==GPIOD)
+//		{
+//			GPIOD_PCLK_DI();
+//			GPIOD_REG_RESET();
+//		}
+//	}
 
 	void PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 	{
@@ -167,7 +167,7 @@ namespace Gpio {
 				//clear the corresonding RTSR bit
 			EXTI->RTSR &= ~(1 << _pinNo);
 
-			*NVIC_ISER0 |= 1 << IRQ_NO_EXTI1;
+			*NVIC_ISER0 |= 1 << IRQ_NO_EXTI0;
 		}
 
 		else if(_mode == INT_RT)

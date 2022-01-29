@@ -20,35 +20,46 @@
 #include <stdlib.h>
 #include "stm32f407xx.h"
 
-int main(void)
-{
-	Usart usart1 = Usart(USART_1);
-	usart1.usart_init();
-	Gpio::PinConfig_t intPinConf(PIN_1, INT_FT, PULL_UP, NO_AF);
-	Gpio::PinConfig_t outputPinConf(PIN_15, OUTPUT);
-	Gpio::Handler_t intHandler(GPIOA, &intPinConf);
-	Gpio::Handler_t outputHandler(GPIOD, &outputPinConf);
-	Gpio::Init(&intHandler);
-	Gpio::Init(&outputHandler);
-
-	Gpio::WriteToOutputPin(GPIOD, PIN_15, SET);
-
-	while(1)
-	{
-
-	}
-}
-
 void delay(uint32_t ticks)
 {
 	for(size_t i = 0; i < (ticks * 1000); i++);
 }
 
-extern "C" void EXTI1_IRQHandler(void)
+int main(void)
 {
-	BLUE_TOGGLE();
-	if(EXTI->PR |= 1 << PIN_1)
+	Usart usart1 = Usart(USART_3);
+	usart1.usart_init();
+
+	Gpio::PinConfig_t intPinConf(PIN_1, INT_FT, PULL_UP, NO_AF);
+	//Onboard button triggers interrupt. No pull up/pull down
+	Gpio::PinConfig_t buttonConf(PIN_0, INT_FT, NO_PUPD);
+	Gpio::PinConfig_t outputPinConf(PIN_15, OUTPUT);
+	Gpio::PinConfig_t red(PIN_14, OUTPUT);
+	Gpio::Handler_t intHandler(GPIOA, &intPinConf);
+	Gpio::Handler_t buttonHandler(GPIOA, &buttonConf);
+	Gpio::Handler_t outputHandler(GPIOD, &outputPinConf);
+	Gpio::Handler_t redHandler(GPIOD, &red);
+	Gpio::Init(&intHandler);
+	Gpio::Init(&buttonHandler);
+	Gpio::Init(&outputHandler);
+	Gpio::Init(&redHandler);
+
+	Gpio::WriteToOutputPin(GPIOD, PIN_15, SET);
+	while(1)
 	{
-		CLR_EXTI_INT(PIN_1);
+		usart1.puts("Ticker\n\r");
+		delay(1000);
+		Gpio::ToggleOutputPin(GPIOD, PIN_15);
+	}
+}
+
+
+
+extern "C" void EXTI0_IRQHandler(void)
+{
+	RED_TOGGLE();
+	if(EXTI->PR |= 1 << PIN_0)
+	{
+		CLR_EXTI_INT(PIN_0);
 	}
 }

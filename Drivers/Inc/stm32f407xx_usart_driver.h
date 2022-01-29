@@ -10,8 +10,14 @@
 
 #include "stm32f407xx.h"
 
+#define BAUD_9600    0x0683
+
+#define TXE          0x0080
+#define TC           0x0040
+
 typedef enum {
-	USART_1
+	USART_1,
+	USART_3
 }USART_t;
 
 class Usart
@@ -21,6 +27,8 @@ private:
 public:
 	Usart(USART_t usart_type);
 	void usart_init();
+	void putc(char c);
+	void puts(const char *s);
 };
 
 

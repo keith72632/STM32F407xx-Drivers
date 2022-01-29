@@ -359,6 +359,8 @@ typedef struct
  * LED Macros
  */
 #define BLUE_TOGGLE()       (GPIOD->ODR ^= (1 << 15))
+#define RED_TOGGLE()        (GPIOD->ODR ^= (1 << 14))
+
 
 /*
  * Clock Disable Macros for SPIx peripherals

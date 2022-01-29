@@ -2,7 +2,6 @@ stm32f407xx_gpio_driver.cpp:27:2:Gpio::PinConfig::PinConfig(uint8_t, uint8_t)	16
 stm32f407xx_gpio_driver.cpp:33:2:Gpio::PinConfig::PinConfig(uint8_t, uint8_t, uint8_t)	16	static
 stm32f407xx_gpio_driver.cpp:40:2:Gpio::PinConfig::PinConfig(uint8_t, uint8_t, uint8_t, uint8_t)	16	static
 stm32f407xx_gpio_driver.cpp:48:2:Gpio::Handler::Handler(GPIO_RegDef_t*, Gpio::PinConfig_t*)	24	static
-stm32f407xx_gpio_driver.cpp:54:2:Gpio::Handler::~Handler()	16	static
 stm32f407xx_gpio_driver.cpp:78:7:void Gpio::PeriClockControl(GPIO_RegDef_t*, uint8_t)	16	static
 stm32f407xx_gpio_driver.cpp:121:7:void Gpio::Init(Gpio::Handler_t*)	32	static
 stm32f407xx_gpio_driver.cpp:226:7:void Gpio::DeInit(GPIO_RegDef_t*)	16	static

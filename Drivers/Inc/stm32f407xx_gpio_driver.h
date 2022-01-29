@@ -89,7 +89,7 @@ namespace Gpio {
 		GPIO_RegDef_t *pGPIOx;
 		PinConfig_t *pPinConfig;
 		Handler(GPIO_RegDef_t *reg, PinConfig_t *pin);
-		~Handler();
+//		~Handler();
 	}Handler_t;
 	/***********************************************************************************
 	 *                       APIs supported by this driver
