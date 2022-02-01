@@ -58,6 +58,7 @@ int main(void)
 extern "C" void EXTI0_IRQHandler(void)
 {
 	RED_TOGGLE();
+	usart3_puts("Test\n\r");
 	if(EXTI->PR |= 1 << PIN_0)
 	{
 		CLR_EXTI_INT(PIN_0);

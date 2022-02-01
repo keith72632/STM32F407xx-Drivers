@@ -24,32 +24,14 @@
  * */
 
 namespace Gpio {
-	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode)
-	{
-		this->GPIO_PinNumber = pinNumber;
-		this->GPIO_PinMode = pinMode;
-	}
+	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode) : GPIO_PinNumber(pinNumber), GPIO_PinMode(pinMode) {}
 
-	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t pupd)
-	{
-		this->GPIO_PinNumber = pinNumber;
-		this->GPIO_PinMode = pinMode;
-		this->GPIO_PinPuPdControl = pupd;
-	}
+	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t pupd) : GPIO_PinNumber(pinNumber), GPIO_PinMode(pinMode), GPIO_PinPuPdControl(pupd) {}
 
-	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t pupd, uint8_t altFun)
-	{
-		this->GPIO_PinNumber = pinNumber;
-		this->GPIO_PinMode = pinMode;
-		this->GPIO_PinPuPdControl = pupd;
-		this->GPIO_PinAltFunMode = altFun;
-	}
+	PinConfig_t::PinConfig(uint8_t pinNumber, uint8_t pinMode, uint8_t pupd, uint8_t altFun) : GPIO_PinNumber(pinNumber), GPIO_PinMode(pinMode),
+			GPIO_PinPuPdControl(pupd), GPIO_PinAltFunMode(altFun) {}
 
-	Handler_t::Handler(GPIO_RegDef_t *reg, PinConfig_t *pin)
-	{
-		this->pGPIOx = reg;
-		this->pPinConfig = pin;
-	}
+	Handler_t::Handler(GPIO_RegDef_t *reg, PinConfig_t *pin) : pGPIOx(reg), pPinConfig(pin) {}
 
 //	Handler_t::~Handler(void)
 //	{

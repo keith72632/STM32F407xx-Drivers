@@ -73,3 +73,21 @@ void Usart::puts(const char *s)
 
 }
 
+extern "C" {
+	void usart3_putc(char c)
+	{
+		while(!(USART3->SR & TXE)){};
+		USART3->DR = c;
+	}
+
+	void usart3_puts(const char *s)
+	{
+		if(*s)
+		{
+			usart3_putc(*s);
+			usart3_puts(s+=1);
+		}
+		while(!(USART3->SR & TC)){};
+	}
+}
+

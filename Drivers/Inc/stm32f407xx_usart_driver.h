@@ -15,6 +15,7 @@
 #define TXE          0x0080
 #define TC           0x0040
 
+
 typedef enum {
 	USART_1,
 	USART_3
@@ -31,6 +32,9 @@ public:
 	void puts(const char *s);
 };
 
-
+extern "C" {
+	void usart3_putc(char c);
+	void usart3_puts(const char *s);
+}
 
 #endif /* INC_STM32F407XX_USART_DRIVER_H_ */

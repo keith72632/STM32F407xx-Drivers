@@ -2,3 +2,5 @@ stm32f407xx_usart_driver.cpp:10:1:Usart::Usart(USART_t)	16	static
 stm32f407xx_usart_driver.cpp:15:6:void Usart::usart_init()	56	static
 stm32f407xx_usart_driver.cpp:37:6:void Usart::putc(char)	16	static
 stm32f407xx_usart_driver.cpp:52:6:void Usart::puts(const char*)	16	static
+stm32f407xx_usart_driver.cpp:77:7:void usart3_putc(char)	16	static
+stm32f407xx_usart_driver.cpp:83:7:void usart3_puts(const char*)	16	static
