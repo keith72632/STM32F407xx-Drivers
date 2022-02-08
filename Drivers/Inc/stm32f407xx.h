@@ -109,6 +109,7 @@
 #define USART1_BASEADDR						(APB2PERIPH_BASEADDR + 0x1000)
 #define USART6_BASEADDR						(APB2PERIPH_BASEADDR + 0x1400)
 
+#define ADC1_BASEADDR                       (APB2PERIPH_BASEADDR + 0x2000)
 
 
 
@@ -121,6 +122,26 @@
  * Compared to number of registers of SPI peripheral of STM32Lx or STM32F0x family of MCUs
  * Please check your Device RM
  */
+
+typedef struct {
+	__vo uint32_t SR;
+	__vo uint32_t CR1;
+	__vo uint32_t CR2;
+	__vo uint32_t DMPR1;
+	__vo uint32_t SMPR2;
+	__vo uint32_t JOFR[4];
+	__vo uint32_t HTR;
+	__vo uint32_t LTR;
+	__vo uint32_t SQR1;
+	__vo uint32_t SQR2;
+	__vo uint32_t SQR3;
+	__vo uint32_t JSQR;
+	__vo uint32_t JDR[4];
+	__vo uint32_t DR;
+	__vo uint32_t CSR;
+	__vo uint32_t CCR;
+	__vo uint32_t CDR;
+}ADC_RegDef_t;
 
 typedef struct
 {
@@ -293,6 +314,9 @@ typedef struct
 #define UART5  				((USART_RegDef_t*)UART5_BASEADDR)
 #define USART6  			((USART_RegDef_t*)USART6_BASEADDR)
 
+
+/*ADC*/
+#define ADC1                ((ADC_RegDef_t*)ADC1_BASEADDR);
 /*
  * Clock Enable Macros for GPIOx peripherals
  */
@@ -636,6 +660,7 @@ typedef struct
 //#include "stm32f407xx_i2c_driver.h"
 #include "stm32f407xx_usart_driver.h"
 //#include "stm32f407xx_rcc_driver.h"
+#include "stm32f407xx_adc_driver.h"
 
 
 #endif /* STM32F407XX_H_ */

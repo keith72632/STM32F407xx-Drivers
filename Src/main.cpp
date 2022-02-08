@@ -27,6 +27,7 @@ void delay(uint32_t ticks)
 
 int main(void)
 {
+	ADC_Init();
 	Usart usart1 = Usart(USART_3);
 	usart1.usart_init();
 
