@@ -1,3 +1,4 @@
 main.cpp:23:6:void delay(uint32_t)	24	static
 main.cpp:28:5:int main()	88	static
-main.cpp:59:17:void EXTI0_IRQHandler()	8	static
+main.cpp:62:7:void EXTI0_IRQHandler()	8	static
+main.cpp:71:7:void ADC_IRQHandler()	16	static

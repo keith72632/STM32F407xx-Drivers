@@ -15,7 +15,7 @@
  *
  ******************************************************************************
  */
-
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include "stm32f407xx.h"
@@ -48,6 +48,8 @@ int main(void)
 	Gpio::WriteToOutputPin(GPIOD, PIN_15, SET);
 	while(1)
 	{
+		uint32_t val = GPIOA->IDR & 0xffffffff;
+		printf("Value %ld\n", val);
 		usart1.puts("Ticker\n\r");
 		delay(1000);
 		Gpio::ToggleOutputPin(GPIOD, PIN_15);
@@ -56,12 +58,24 @@ int main(void)
 
 
 
-extern "C" void EXTI0_IRQHandler(void)
-{
-	RED_TOGGLE();
-	usart3_puts("Test\n\r");
-	if(EXTI->PR |= 1 << PIN_0)
+extern "C" {
+	void EXTI0_IRQHandler(void)
 	{
-		CLR_EXTI_INT(PIN_0);
+		RED_TOGGLE();
+		usart3_puts("Test\n\r");
+		if(EXTI->PR |= 1 << PIN_0)
+		{
+			CLR_EXTI_INT(PIN_0);
+		}
+	}
+	void ADC_IRQHandler(void)
+	{
+		GREEN_TOGGLE();
+		uint32_t val;
+		if(ADC1->SR & (1 << 1))
+		{
+			val = ADC1->DR;
+			printf("Val %ld\n", val);
+		}
 	}
 }

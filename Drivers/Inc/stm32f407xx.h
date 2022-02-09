@@ -36,6 +36,7 @@
 #define NVIC_ICER2  		((__vo uint32_t*)0XE000E188)
 #define NVIC_ICER3			((__vo uint32_t*)0XE000E18C)
 
+#define NVIC_ENABLE_IRQ(IRQ_NO) (*NVIC_ISER0 |= 1 << IRQ_NO)
 
 /*
  * ARM Cortex Mx Processor Priority Register Address Calculation
@@ -109,25 +110,13 @@
 #define USART1_BASEADDR						(APB2PERIPH_BASEADDR + 0x1000)
 #define USART6_BASEADDR						(APB2PERIPH_BASEADDR + 0x1400)
 
-#define ADC1_BASEADDR                       (APB2PERIPH_BASEADDR + 0x2000)
 
-
-
-
-/**********************************peripheral register definition structures **********************************/
-
-/*
- * Note : Registers of a peripheral are specific to MCU
- * e.g : Number of Registers of SPI peripheral of STM32F4x family of MCUs may be different(more or less)
- * Compared to number of registers of SPI peripheral of STM32Lx or STM32F0x family of MCUs
- * Please check your Device RM
- */
 
 typedef struct {
 	__vo uint32_t SR;
 	__vo uint32_t CR1;
 	__vo uint32_t CR2;
-	__vo uint32_t DMPR1;
+	__vo uint32_t SMPR1;
 	__vo uint32_t SMPR2;
 	__vo uint32_t JOFR[4];
 	__vo uint32_t HTR;
@@ -142,6 +131,19 @@ typedef struct {
 	__vo uint32_t CCR;
 	__vo uint32_t CDR;
 }ADC_RegDef_t;
+
+#define ADC1_BASEADDR (APB2PERIPH_BASEADDR + 0x2000)
+#define ADC1          ((ADC_RegDef_t*)ADC1_BASEADDR)
+
+/**********************************peripheral register definition structures **********************************/
+
+/*
+ * Note : Registers of a peripheral are specific to MCU
+ * e.g : Number of Registers of SPI peripheral of STM32F4x family of MCUs may be different(more or less)
+ * Compared to number of registers of SPI peripheral of STM32Lx or STM32F0x family of MCUs
+ * Please check your Device RM
+ */
+
 
 typedef struct
 {
@@ -316,7 +318,7 @@ typedef struct
 
 
 /*ADC*/
-#define ADC1                ((ADC_RegDef_t*)ADC1_BASEADDR);
+#define ADC                ((ADC_RegDef_t*)ADC1_BASEADDR);
 /*
  * Clock Enable Macros for GPIOx peripherals
  */
@@ -384,6 +386,7 @@ typedef struct
  */
 #define BLUE_TOGGLE()       (GPIOD->ODR ^= (1 << 15))
 #define RED_TOGGLE()        (GPIOD->ODR ^= (1 << 14))
+#define GREEN_TOGGLE()      (GPIOD->ODR ^= (1 << 13))
 
 
 /*
@@ -442,6 +445,7 @@ typedef struct
 #define IRQ_NO_EXTI2 		8
 #define IRQ_NO_EXTI3 		9
 #define IRQ_NO_EXTI4 		10
+#define IRQ_NO_ADC          18
 #define IRQ_NO_EXTI9_5 		23
 #define IRQ_NO_EXTI15_10 	40
 #define IRQ_NO_SPI1			35
